@@ -1,0 +1,103 @@
+/*
+------------------------------------------------
+Programer: Cody Bruehl
+Class: Data Structures
+HW Name: Linked List HW6
+Due date: 3/29/2021
+Instructor Name: Chao Zhao
+Purpose:
+This program will create a linked list holding 
+20 nodes with the option to print the nodes, 
+search through the nodes and tell you if that 
+node exists in the list as well as to delete 
+nodes. 
+------------------------------------------------
+*/
+#include<iostream>
+#include<stdlib.h>	//for rand() function
+#include<time.h>	//for time(0 function
+using namespace std;
+
+struct Node{
+	int data;
+	struct Node *next;
+};
+
+struct Node* head = NULL;
+
+void add_node(int new_data){ 											//Insert node into list
+	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+		new_node->data = new_data;
+		new_node->next = head;
+		head = new_node;
+}
+
+void print_list(){ 															//Print elements in list to screen
+	struct Node* ptr;
+	ptr = head;
+	while (ptr != NULL){
+		cout<< ptr->data <<" ";
+			ptr = ptr->next;
+	}
+}
+
+bool search_node(Node* head, int key){ 										//search list for element; return t or f
+	Node* current = head;
+	while (current != NULL){
+		if(current->data == key)
+			return true;
+		current = current->next;
+	}
+	return false;
+}
+
+Node* vanish_node(Node *head,int x){ 										//Delete element from list
+	Node *tmp = head;
+	while(head->data == x){
+		head = head->next;
+	}
+	while(tmp->next != NULL){
+		if(tmp->next->data == x)
+	{
+			tmp->next = tmp->next->next;
+	}	
+		else{
+			tmp = tmp->next;
+		}
+	}
+	return head;
+}
+
+int main(){
+	int Search;
+	int Vanish;
+	srand(time(NULL));
+	for(int i=0;i<20;i++){ 													//print initial linked list.
+		add_node(rand()%20+1);
+	}
+	
+	cout<<"The linked list is: ";
+	print_list();
+	cout << endl;
+	
+	cout << "What number do you desire to search for? ";
+	cin >> Search;
+	cout << endl;
+	
+	if(search_node(head, Search)){ 											//Search node for integer
+		cout << "FOUND"<<endl;
+	}else{
+		cout << "NOT FOUND"<<endl;
+	}
+	
+	cout << "What number do you desire to make vanish? ";
+	cin >> Vanish; 
+	cout << endl;
+	
+	vanish_node(head, Vanish); 												//delete node from list
+	cout << "The linked list is now: ";
+	print_list(); 
+	cout << endl;
+
+	return 0;
+}
