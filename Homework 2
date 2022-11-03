@@ -1,0 +1,32 @@
+#include<string>
+#include<iostream>
+#include<bits/stdc++.h>
+using namespace std;
+
+void print_string_forwards_then_backwards(string str, int begin, int end)
+{
+	
+	if(str.size() == 0) 
+	
+    { 
+        return; 
+        
+    } 
+    
+    print_string_forwards_then_backwards(str.substr(1), begin + 1, end -1); 
+    cout << str[0];
+	
+};
+
+int main()
+{
+    string str;
+	int len;
+    cout << "This program will print a string forwards first and then print it backward" << endl;
+    cout << "Enter a string: ";
+    cin >> str;
+    len = str.size();
+    print_string_forwards_then_backwards(str, 0, len); //index from 0 to len -1
+    cout << endl;
+    return 0;
+}
