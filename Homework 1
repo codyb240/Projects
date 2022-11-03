@@ -1,0 +1,56 @@
+#include<iostream>
+#include<cstdlib>
+#include<time.h>
+using namespace std;
+
+void init_array(int arr[], int size){
+	
+	srand(time(0));
+	for (int i=0; i < size; i++){
+		arr[i] = rand() % 100 + 1;
+}
+};
+
+void print_array(int arr[], int size){
+   
+    for (int i=0; i < size; i++){
+    	
+        cout << arr[i] << " ";  
+}
+    cout << endl;  
+ 
+};
+
+void swap(int *i, int *k)  
+{  
+    int temp = *i;  
+    *i = *k;  
+    *k = temp;  
+};
+
+void selection_sort(int arr[],int size)
+{
+	int min;
+	  
+    for (int i=0; i<size-1; i++)
+    {
+		min = i;
+        	for (int j=i; j<size; j++)
+        		if (arr[j] < arr[min])
+            		min = j;
+        	
+			swap(&arr[min], &arr[i]);
+    }
+}
+int main( )
+{
+	int arr[100];
+	int size = 100;
+	init_array(arr, size); //fill the array with random integer (1 -100)
+	print_array(arr, size); //print the unsorted array
+	selection_sort(arr, size); //sort the array using the selection sort
+	cout<<endl;
+	print_array(arr, size); //print the sorted array
+	
+return 0;
+}
