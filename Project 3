@@ -1,0 +1,318 @@
+/*-------------------------------------------------------------------------
+Programer: Cody Bruehl
+Due date: 4/19/2021
+purpose:
+This program takes info for passenger reservations and organizes 
+the info into a linear linked list. It then further organizes the nodes of
+list in alphabetical order.
+You can also change several things in relation to the reservation, add reservations
+and cancel them.
+---------------------------------------------------------------------------
+*/
+#include <iostream>
+#include <fstream>	// to open database file
+#include <cstdlib>
+#include <string>
+#include <stdlib.h>	//for rand() function
+using namespace std;
+
+struct Node{ //creates the node
+	char *Pname;
+	int ID;
+	int rNum;
+	char *pNum;
+	int sNum;
+	char *food;
+	struct Node *next;
+};
+
+struct Node* head = NULL; //assigns node initial value to null
+
+class linked_list
+{
+	public:
+		linked_list();
+		// constructor initializes data
+		void add_node(char *Pname, int ID, int rNum, char *pNum, int sNum, char *food);
+		//inserts a new node of passenger data to the linked list
+		bool delete_node(Node *head,char *x);
+		//removes a node from the linked list
+		Node* print_one_node(char *x);
+		//prints all information contained in a specific node
+		char* minimum();
+		//return the string in alphabetical order
+		void sort();
+		//sort list into alphabetical order
+		
+};
+
+linked_list::linked_list(){ // creates the linked list
+	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+	new_node->Pname = NULL;
+	new_node->ID = 0;
+	new_node->rNum = 0;
+	new_node->pNum = NULL;
+	new_node->sNum = 0;
+	new_node->food = NULL;
+	new_node->next = NULL;
+}
+
+void linked_list::add_node(char *Pname, int ID, int rNum, char *pNum, int sNum, char *food){ //adds a node in the list
+	struct Node* new_node = (struct Node*) malloc(sizeof(struct Node));
+	new_node->Pname = Pname;
+	new_node->ID = ID;
+	new_node->rNum = rNum;
+	new_node->pNum = pNum;
+	new_node->sNum = sNum;
+	new_node->food = food;
+	new_node->next = head;
+	head = new_node;
+}
+
+bool linked_list::delete_node(Node *head,char *x){  //deletes a node in the list
+	Node *ptr = head;
+	Node *n = NULL;
+if(ptr->Pname == x){
+    	head=head->next;
+    	delete ptr;
+    	return true;
+	}
+	while (ptr != NULL && ptr->Pname != x ){
+    	n = ptr;
+    	ptr = ptr->next;
+
+		if (ptr == NULL ){
+			return false;
+		}else if (ptr->Pname == x){
+     		n->next = ptr->next;
+     		delete ptr;
+     		return true;
+  		}
+	}
+}
+
+Node* linked_list::print_one_node(char x[64]){ //prints out a single node
+	Node *ptr = head;
+	while(ptr->Pname != x){
+		ptr = ptr->next;
+	}
+	cout << "Passenger name:    " << ptr->Pname << endl;
+	cout << "Passenger ID #:    " << ptr->ID << endl;
+	cout << "Reservation #:     " << ptr->rNum << endl;
+	cout << "Passenger Phone #: " << ptr->pNum << endl;
+	cout << "Seat #:            " << ptr->sNum << endl;
+	cout << "Prefered food:     " << ptr->food << endl;
+}
+
+char* linked_list::minimum(){
+    Node *p = head;
+
+    char *minimum = p->Pname;
+
+    while (p->next != NULL)
+    {
+        p = p->next;
+        if(minimum > p->Pname)
+        {
+             minimum = p->Pname;
+        }
+    }
+    return minimum;
+
+}
+
+void linked_list::sort()
+{  
+   char *mini;
+   bool removed;
+
+  
+  Node *newnode1 = new Node; //adds the first node to the new list.
+  mini= minimum();  // get minimum from existing linked list
+  newnode1->Pname = mini;
+  newnode1->next = NULL;
+  removed = delete_node(head, mini);
+  Node *ptr = newnode1;
+
+while (head != NULL) // the loop should run until the original list is empty
+{
+  Node *newnode = new Node;
+  mini = minimum();  // get minimum from existing linked list
+  newnode->Pname = mini;
+  newnode->next = NULL;
+  ptr->next = newnode; //add minimum node to new list
+  removed = delete_node(head, mini);
+  ptr = ptr->next;
+}
+   head = newnode1; // change head pointer to point to sorted list.
+}
+
+class reservation 
+{
+	public:
+		reservation();
+		//constuctor initializes data
+        char menu();
+        //reservation system menu  
+		void begin();
+		// starts user input
+		void search(Node *head);
+		// allows user to display specific passenger info
+		void add();
+		// allows user to make a new passenger reservation
+		void bye();
+		  // allows user to cancel a reservation
+		void print();
+		  // prints list of all passengers
+		void diffFood();
+		  // user can change food preference of passenger
+		void diffSeat();
+		// user can change seat of passenger if available
+	private:
+		linked_list mine;
+		  // declare an object of the linked list class
+		int ID;
+		  // stores id for search functions
+		int counter;
+		char Pname[64], pNum[64], food[64], newfood[64];
+		int rNum, sNum, newseat;
+};
+
+reservation::reservation(){
+	Pname[0] = 'n';
+	ID = 0;
+	rNum = 0;
+	pNum[0] = 'n';
+	sNum = 0;
+	food[0] = 'n';
+}
+
+char reservation::menu(){ //creates the menu
+	string choice;
+	cout << "\n\t\tMenu\n";
+	cout << "\t 1\tEnter a reservation\n";
+	cout << "\t 2\tCancel a reservation\n";
+	cout << "\t 3\tPrint a passenger list\n";
+	cout << "\t 4\tSearch for a passenger\n";
+	cout << "\t 5\tChange Reservation Seat\n";
+	cout << "\t 6\tChange Reservation Food\n";
+	cout << "\t 0\tEXIT\n";
+	
+	cout << "\nEnter your choice: ";
+	cin  >> choice;	// user input
+	
+	return choice[0];	// returns user input
+}
+
+void reservation::search(Node *head){ //searches through the passenger list
+	char x[64];
+	cout << "Please enter a passengers name to search for: ";
+	cin >> x;
+	mine.print_one_node(x);
+}
+
+void reservation::add(){ //adds a passenger to the list
+	int i = rand() % 21 + 1;
+	int r = rand() % 2000 + 1000;
+	int s = rand() % 20 + 1;
+	cout << "Enter the name of the passenger: ";
+	cin >> Pname;
+	cout << endl;
+	cout << "Enter a phone number for the passenger: ";
+	cin >> pNum;
+	cout << endl;
+	cout << "Enter the your food for the flight: ";
+	cin >> food;
+	cout << endl;
+	cout << "Thanks! Here is your ID, Reservation number and Seat number. Enjoy your flight " << endl;
+	cout << "ID #: " << i << endl;
+	cout << "Reservation #: " << r << endl;
+	cout << "Seat #: " << s << endl;
+	mine.add_node(Pname, i, r, pNum, s, food);
+}
+
+void reservation::bye(){ //cancel a reservation
+	cout << "Enter the reservation name you want to cancel: ";
+	cin >> Pname;
+	cout << endl;
+	if(mine.delete_node(head, Pname))
+	cout << "Your reservation has been canceled " << endl;
+	else
+	cout << "The reservation you are trying to cancel does not exist." << endl;
+}
+
+void reservation::print(){ //print the list of all passengers
+	struct Node* ptr;
+	ptr = head;
+	while (ptr != NULL){
+		cout << ptr->Pname <<" ";
+		ptr = ptr->next;
+		cout << endl;
+	}
+}
+
+void reservation::diffFood(){ //changes the reservation food
+	string x;
+	cout << "Please enter the name on the reservation: ";
+	cin >> x;
+	cout << endl;
+	struct Node* ptr;
+	ptr = head;
+	while (ptr->Pname != x){
+		ptr = ptr->next;
+	}
+	cout << "Enter the new food preference: ";
+	cin >> newfood;
+	ptr->food = newfood;
+	cout << endl;
+}
+
+void reservation::diffSeat(){ //changes the reservation seat
+	string x;
+	cout << "Please enter the name on the reservation: ";
+	cin >> x;
+	cout << endl;
+	struct Node* ptr;
+	ptr = head;
+	while (ptr->Pname != x){
+		ptr = ptr->next;
+	}
+	cout << "Enter the seat number you would like assigned to this reservation: ";
+	cin >> newseat;
+	ptr->sNum = newseat;
+	cout << endl;
+}
+
+void reservation::begin(){
+	/* once this function is called, a loop will be created that allows the user 
+	to input how they want the list to be manipulated. 
+	Functions include insert, remove, print,search, changeSeat, and changeFood. 
+	If user enters '0', then the loop will terminate.*/
+	bool done = false;	// done boolean
+	do{
+		char choice = menu(); //get the choice from the user
+		switch(choice)
+		/*this switch compares the choice entered
+		by the user to determine which function
+ 		to call.*/
+		{
+			case '1': add(); break;
+			case '2': bye(); break;
+			case '3': print(); break;
+			case '4': search(head); break;
+			case '5': diffSeat(); break;
+			case '6': diffFood(); break;
+			case '0': done = true; break;
+		default: cout << "INVALID INPUT" << endl;
+		}
+	} while(!done); // if done, then quit, else continue
+
+	cout << "\nThank you for using my simulation." << endl;
+}
+
+int main()
+{
+	reservation bluesky;
+	bluesky.begin();
+	return 0;
+}
