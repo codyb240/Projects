@@ -1,0 +1,88 @@
+#include <iostream>
+#include<bits/stdc++.h>
+#include <stdlib.h>
+#include <string>
+using namespace std;
+
+
+void print_number_vertically(int x);	//function prototype
+
+void locate_min_max(int arr[], int size);		//function prototype
+
+void print_forwards_then_backwards(string str, int begin, int end);		//function prototype
+
+
+int main()
+{
+	int arr[50], number;
+	string s;
+	for(int i; i < 50; i++) 										//initialize the array
+	{
+		arr[i] = rand() % 100;
+	}
+	locate_min_max(arr, 50); 											//find max and min in the array
+	cout << "Enter a number: ";
+	cin >> number;
+	cout << endl;
+	print_number_vertically(number); 								//print number vertically 
+	cout << "Enter a string: ";
+	cin >> s; 														//read string that may contain words
+	cout << endl;
+	print_forwards_then_backwards(s, 0, s.size( ));					//print string forwards and backwards
+
+return 0;
+}
+
+void print_number_vertically(int num)								//function implementation
+{
+	int copy, ver;
+	int counter = 0, temp = 1;													//initialize temp variables
+    
+	copy = num;
+    while (num!=0)
+    {
+        counter = counter+1;
+        num = num/10;
+    }
+    for(int i=1; i < counter; i++)
+    {
+        temp = temp*10;											
+    }
+    while (copy!=0)
+    {
+        ver = copy/temp;
+        copy = copy % temp;
+        temp = temp/10;
+        cout << ver << endl;										//print digits vertically
+    }
+}
+
+void locate_min_max(int arr[], int size)								//function implementation
+{
+	int min, max;													//initialize the min, max variables
+	min = arr[0];
+	max = arr[0];
+	for(int i; i < size; i++)										//compare min to elements, swap them if larger
+	{
+		if(min > arr[i])
+		min = arr[i];
+	}
+	for(int i; i < size; i++)										//compare max to elements, swap them if smaller
+	{
+		if(max < arr[i])
+		max = arr[i];
+	}
+	cout << "The number in the array that is smallest:  " << min << endl;
+	cout << "The number in the array that is largest:  " << max << endl;	//print variables
+}
+
+void print_forwards_then_backwards(string str, int begin, int end)	//function implementation
+{
+      if(end == 0) 													//base case
+    { 
+        return; 
+    } 
+    cout << str[begin];
+    print_forwards_then_backwards(str, begin + 1, end - 1);			//recursion
+	cout << str[begin];
+}
