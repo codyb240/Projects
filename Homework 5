@@ -1,0 +1,43 @@
+#include <queue> //queue template library
+#include <time.h> //for time()
+#include <stdlib.h> //rand(), srand() 
+#include <iostream>
+using namespace std;
+template <class T>
+void remove_keys(queue<T> &q, int key){
+	
+	queue<T> temp;
+    	while(!q.empty()) {
+        	T val = q.front();
+        if(val != key)
+            temp.push(val);
+        	q.pop();
+    }
+    	while (!temp.empty()) {
+        	T val = temp.front();
+        	temp.pop();
+        	q.push(val);
+    }
+};
+
+int main()
+{
+	queue <int> q;
+	int i, temp;
+	srand(time(NULL));//set a seed for random number generator
+	for( i = 0; i < 100; i++)
+	{
+		temp = rand()%100+1;
+		q.push(temp); //push an item onto the queue
+		cout<<temp<<" ";
+	}
+	remove_keys(q, 17);
+
+	 while( !q.empty())
+	{
+		cout<<q.front()<<" ";
+		q.pop();
+	}
+	cout<<endl;
+	return 0;
+}
